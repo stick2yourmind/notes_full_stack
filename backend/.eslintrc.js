@@ -21,5 +21,17 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    quotes: ['error', 'single'],
+    "curly": ['warn', 'multi'],
+    'dot-notation': 'off',
+    "indent": ['error', 2],
+    'max-len': ['warn', {
+      code: 120,
+      ignoreComments: true,
+      ignoreRegExpLiterals: true,
+      ignoreTrailingComments: true
+    }],
+    'no-console': ['error'],
+    "semi": ['error', 'always'],
   },
 };
