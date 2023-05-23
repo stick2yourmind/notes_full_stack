@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Patch, ParseIntPipe, Param } from '@nestjs/common';
 import { NoteService } from './note.service';
 
 @Controller('note')
@@ -15,9 +15,9 @@ export class NoteController {
     return { message: 'archived notes' };
   }
 
-  @Delete()
-  delete() {
-    return { message: 'note deleted' };
+  @Delete(':id')
+  delete(@Param('id', ParseIntPipe) noteId: number) {
+    return { message: `note deleted: ${noteId}` };
   }
 
   @Post()
@@ -25,13 +25,13 @@ export class NoteController {
     return { message: 'note created' };
   }
 
-  @Put()
-  edit() {
-    return { message: 'note edited' };
+  @Put(':id')
+  edit(@Param('id', ParseIntPipe) noteId: number) {
+    return { message: `note edited: ${noteId}` };
   }
 
-  @Patch()
-  archive() {
-    return { message: 'note archived' };
+  @Patch(':id')
+  archive(@Param('id', ParseIntPipe) noteId: number) {
+    return { message: `note archived: ${noteId}` };
   }
 }
