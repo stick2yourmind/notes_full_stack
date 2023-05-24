@@ -24,7 +24,6 @@ module.exports = {
     quotes: ['error', 'single'],
     "curly": ['warn', 'multi'],
     'dot-notation': 'off',
-    "indent": ['error', 2],
     'max-len': ['warn', {
       code: 120,
       ignoreComments: true,
