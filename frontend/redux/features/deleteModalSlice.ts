@@ -1,17 +1,17 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type deleteModalStateType = {
-  enable: boolean,
+  enable: boolean;
   currentNoteId: number | null;
-} 
+};
 
-const initialDeleteModalState:deleteModalStateType = {
+const initialDeleteModalState: deleteModalStateType = {
   enable: false,
   currentNoteId: null,
-}
+};
 
 export const deleteModal = createSlice({
-  name: "deleteModal",
+  name: 'deleteModal',
   initialState: initialDeleteModalState,
   reducers: {
     resetDeleteModal: () => initialDeleteModalState,
@@ -19,16 +19,12 @@ export const deleteModal = createSlice({
       const { payload } = action;
       const newState = {
         enable: true,
-        currentNoteId: payload
-      }
-      return newState
+        currentNoteId: payload,
+      };
+      return newState;
+    },
   },
-
-  }
 });
 
-export const {
-  enableDeleteModal,
-  resetDeleteModal,
-} = deleteModal.actions;
+export const { enableDeleteModal, resetDeleteModal } = deleteModal.actions;
 export default deleteModal.reducer;
