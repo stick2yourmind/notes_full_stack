@@ -1,5 +1,8 @@
-export type NoteCardProps = {
+export type Note = {
   title: string,
   description: string,
-  updatedAt: string
+  updatedAt: string,
+  archived: boolean,
+  id: number
 }
+export type NoteCardProps = Note
