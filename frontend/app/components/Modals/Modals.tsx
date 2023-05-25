@@ -8,9 +8,11 @@ import { ToastType, resetToast } from '@/redux/features/toastSlice';
 import 'react-toastify/dist/ReactToastify.css';
 import CreateEditModal from '../CreateEditModal/CreateEditModal';
 import { initialNote } from '@/app/data/initialValues';
+import { CreateEditModalType } from '@/redux/features/createEditModalSlice';
 
 export default function Modals() {
   const isDeleteModalEnable = useSelector((state: RootState) => state.deleteModalReducer.enable);
+  const createEditModalState = useSelector((state: RootState) => state.createEditModalReducer);
   const toastState = useSelector((state: RootState) => state.toastReducer);
   const dispatch = useDispatch();
 
@@ -48,8 +50,20 @@ export default function Modals() {
 
   return (
     <Fragment>
-      <CreateEditModal mode="Create" previous={initialNote} />
       {isDeleteModalEnable && <DeleteModal />}
+
+      {createEditModalState.enable && createEditModalState.type === CreateEditModalType.CREATE ? (
+        <CreateEditModal mode="Create" previous={null} />
+      ) : (
+        ''
+      )}
+
+      {createEditModalState.enable && createEditModalState.type === CreateEditModalType.EDIT ? (
+        <CreateEditModal mode="Edit" previous={createEditModalState.currentNote} />
+      ) : (
+        ''
+      )}
+
       <ToastContainer limit={1} />
     </Fragment>
   );

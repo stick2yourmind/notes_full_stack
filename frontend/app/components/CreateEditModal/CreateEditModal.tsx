@@ -10,10 +10,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
+import { createNote } from '@/app/services/createNote';
+import { resetCreateEditModal } from '@/redux/features/createEditModalSlice';
+import { editNote } from '@/app/services/editNote';
 
 export type CreateEditModalProps = {
   mode: 'Edit' | 'Create';
-  previous: Pick<Note, 'archived' | 'description' | 'title'>;
+  previous: Pick<Note, 'description' | 'title' | 'id' | 'archived'> | null;
 };
 type FormData = {
   Title: string;
@@ -21,40 +24,76 @@ type FormData = {
 };
 export default function CreateEditModal({ mode, previous }: CreateEditModalProps) {
   const router = useRouter();
-  const noteId = useSelector((state: RootState) => state.deleteModalReducer.currentNoteId);
   const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
-
-  const onSubmit = handleSubmit((data, e) => {
-    console.log(data);
+  } = useForm<FormData>({
+    defaultValues: {
+      Title: previous?.title || '',
+      Description: previous?.description || '',
+    },
   });
 
-  const confirmDelete = async () => {
-    if (noteId) {
-      const wasDeleted = !!(await deleteNote(noteId));
-      if (wasDeleted) {
+  const confirmCreate = async (newNote: Pick<Note, 'title' | 'description'>) => {
+    const wasCreated = !!(await createNote(newNote));
+    if (wasCreated) {
+      dispatch(
+        enableToast({
+          type: ToastType.SUCCESS,
+          message: 'Note was created',
+        }),
+      );
+      dispatch(resetCreateEditModal());
+      router.refresh();
+    } else {
+      dispatch(
+        enableToast({
+          type: ToastType.ERROR,
+          message: 'Note could not be created',
+        }),
+      );
+    }
+  };
+
+  const confirmEdit = async (newNote: Pick<Note, 'title' | 'description' | 'archived'>) => {
+    if (previous?.id) {
+      const wasEdited = !!(await editNote(previous.id, newNote));
+      if (wasEdited) {
         dispatch(
           enableToast({
             type: ToastType.SUCCESS,
-            message: 'Note was deleted',
+            message: 'Note was edited',
           }),
         );
-        dispatch(resetDeleteModal());
+        dispatch(resetCreateEditModal());
         router.refresh();
       } else {
         dispatch(
           enableToast({
             type: ToastType.ERROR,
-            message: 'Note could not be deleted',
+            message: 'Note could not be edited',
           }),
         );
       }
     }
   };
+
+  const onSubmit = handleSubmit((data, e) => {
+    if (mode === 'Create')
+      confirmCreate({
+        title: data.Title,
+        description: data.Description,
+      });
+    else {
+      confirmEdit({
+        title: data.Title,
+        description: data.Description,
+        archived: previous?.archived || false,
+      });
+    }
+  });
 
   return (
     <div
@@ -62,7 +101,7 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
     flex justify-center items-center"
     >
       <div className="flex flex-col min-w-[350px]">
-        <button className="text-white text-xl place-self-end" onClick={() => dispatch(resetDeleteModal())}>
+        <button className="text-white text-xl place-self-end" onClick={() => dispatch(resetCreateEditModal())}>
           X
         </button>
         <section className="bg-white p-2 rounded flex flex-col items-center justify-center">
@@ -98,7 +137,7 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
               {errors?.Description?.message ? `Description ${errors?.Description?.message}` : ''}
             </p>
 
-            <button className="bg-pink-700 p-1 rounded" onClick={confirmDelete}>
+            <button className="bg-pink-700 p-1 rounded" type="submit">
               Confirm
             </button>
 
