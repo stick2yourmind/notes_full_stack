@@ -37,7 +37,7 @@ export const notesMock = [
         "updatedAt": "2023-05-24T02:06:15.469Z",
         "title": "Tarea04",
         "description": "Terminar el back04",
-        "archived": false
+        "archived": true
     },
     {
         "id": 14,
