@@ -13,7 +13,6 @@ export class NoteService {
           title: dto.title,
           description: dto.description,
           archived: false,
-          // categories: { connect: [{ id: 1 }] },
         },
       });
       return newNote;
@@ -37,6 +36,7 @@ export class NoteService {
 
   async editNote(noteId: number, dto: EditNoteDto) {
     try {
+      const categoriesArray = dto?.categories?.map((categoryId) => ({ id: categoryId })) || [];
       const editNote = await this.prisma.note.update({
         where: {
           id: noteId,
@@ -45,7 +45,7 @@ export class NoteService {
           title: dto.title,
           description: dto.description,
           archived: dto.archived,
-          // categories: { connect: [{ id: 1 }] },
+          categories: { connect: categoriesArray },
         },
       });
       return editNote;
@@ -76,6 +76,9 @@ export class NoteService {
         where: {
           archived: true,
         },
+        include: {
+          categories: true,
+        },
       });
       return archivedNotes;
     } catch (error) {
@@ -88,6 +91,9 @@ export class NoteService {
       const activeNotes = await this.prisma.note.findMany({
         where: {
           archived: false,
+        },
+        include: {
+          categories: true,
         },
       });
       return activeNotes;
