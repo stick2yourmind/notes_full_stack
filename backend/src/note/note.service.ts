@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ArchiveModifierNote, CreateNoteDto, EditNoteDto } from './dto';
 
@@ -7,68 +7,92 @@ export class NoteService {
   constructor(private prisma: PrismaService) {}
 
   async createNote(dto: CreateNoteDto) {
-    const newNote = await this.prisma.note.create({
-      data: {
-        title: dto.title,
-        description: dto.description,
-        archived: false,
-        // categories: { connect: [{ id: 1 }] },
-      },
-    });
-    return newNote;
+    try {
+      const newNote = await this.prisma.note.create({
+        data: {
+          title: dto.title,
+          description: dto.description,
+          archived: false,
+          // categories: { connect: [{ id: 1 }] },
+        },
+      });
+      return newNote;
+    } catch (error) {
+      throw new BadRequestException('Bad request');
+    }
   }
 
   async deleteNote(noteId: number) {
-    const deletedNote = await this.prisma.note.delete({
-      where: {
-        id: noteId,
-      },
-    });
-    return deletedNote;
+    try {
+      const deletedNote = await this.prisma.note.delete({
+        where: {
+          id: noteId,
+        },
+      });
+      return deletedNote;
+    } catch (error) {
+      throw new BadRequestException('Bad request');
+    }
   }
 
   async editNote(noteId: number, dto: EditNoteDto) {
-    const editNote = await this.prisma.note.update({
-      where: {
-        id: noteId,
-      },
-      data: {
-        title: dto.title,
-        description: dto.description,
-        archived: dto.archived,
-        // categories: { connect: [{ id: 1 }] },
-      },
-    });
-    return editNote;
+    try {
+      const editNote = await this.prisma.note.update({
+        where: {
+          id: noteId,
+        },
+        data: {
+          title: dto.title,
+          description: dto.description,
+          archived: dto.archived,
+          // categories: { connect: [{ id: 1 }] },
+        },
+      });
+      return editNote;
+    } catch (error) {
+      throw new BadRequestException('Bad request');
+    }
   }
 
   async archiveModifierNote(noteId: number, dto: ArchiveModifierNote) {
-    const editNote = await this.prisma.note.update({
-      where: {
-        id: noteId,
-      },
-      data: {
-        archived: dto.archived,
-      },
-    });
-    return editNote;
+    try {
+      const editNote = await this.prisma.note.update({
+        where: {
+          id: noteId,
+        },
+        data: {
+          archived: dto.archived,
+        },
+      });
+      return editNote;
+    } catch (error) {
+      throw new BadRequestException('Bad request');
+    }
   }
 
   async getArchivedNotes() {
-    const archivedNotes = await this.prisma.note.findMany({
-      where: {
-        archived: true,
-      },
-    });
-    return archivedNotes;
+    try {
+      const archivedNotes = await this.prisma.note.findMany({
+        where: {
+          archived: true,
+        },
+      });
+      return archivedNotes;
+    } catch (error) {
+      throw new BadRequestException('Bad request');
+    }
   }
 
   async getActiveNotes() {
-    const activeNotes = await this.prisma.note.findMany({
-      where: {
-        archived: false,
-      },
-    });
-    return activeNotes;
+    try {
+      const activeNotes = await this.prisma.note.findMany({
+        where: {
+          archived: false,
+        },
+      });
+      return activeNotes;
+    } catch (error) {
+      throw new BadRequestException('Bad request');
+    }
   }
 }
