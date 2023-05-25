@@ -1,11 +1,11 @@
-import { Note } from "../components";
-import api from "./api";
+import { Note } from '../components';
+import api from './api';
 
-export async function  deleteNote(noteId:number) {
+export async function deleteNote(noteId: number) {
   try {
     const { data } = await api.delete<Note>(`/note/${noteId}`);
-    return data
+    return data;
   } catch (error) {
-    return null
+    return null;
   }
 }

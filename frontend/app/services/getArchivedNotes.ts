@@ -1,11 +1,11 @@
-import { Note } from "../components";
-import api from "./api";
+import { Note } from '../components';
+import api from './api';
 
 export async function getArchivedNotes() {
   try {
     const { data } = await api.get<Note[]>('/note/archive');
-    return data
+    return data;
   } catch (error) {
-    return null
+    return null;
   }
 }
