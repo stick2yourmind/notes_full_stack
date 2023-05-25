@@ -1,32 +1,34 @@
-"use client"
-import { deleteNote } from "@/app/services";
-import { resetDeleteModal } from "@/redux/features/deleteModalSlice";
-import { ToastType, enableToast } from "@/redux/features/toastSlice";
-import { RootState } from "@/redux/store";
-import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+'use client';
+import { deleteNote } from '@/app/services';
+import { resetDeleteModal } from '@/redux/features/deleteModalSlice';
+import { ToastType, enableToast } from '@/redux/features/toastSlice';
+import { RootState } from '@/redux/store';
+import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function DeleteModal() {
-  const router = useRouter()
+  const router = useRouter();
   const noteId = useSelector((state: RootState) => state.deleteModalReducer.currentNoteId);
   const dispatch = useDispatch();
-  
+
   const confirmDelete = async () => {
-    if(noteId){
-      const wasDeleted = !!await deleteNote(noteId)
-      if(wasDeleted) {
-        dispatch(enableToast({type: ToastType.SUCCESS, message: "Note was deleted"}))  
-        dispatch(resetDeleteModal())
-        router.refresh()
-      }
-      else {
-        dispatch(enableToast({type: ToastType.ERROR, message: "Note could not be deleted"}))
+    if (noteId) {
+      const wasDeleted = !!(await deleteNote(noteId));
+      if (wasDeleted) {
+        dispatch(enableToast({ type: ToastType.SUCCESS, message: 'Note was deleted' }));
+        dispatch(resetDeleteModal());
+        router.refresh();
+      } else {
+        dispatch(enableToast({ type: ToastType.ERROR, message: 'Note could not be deleted' }));
       }
     }
-  }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm 
-    flex justify-center items-center">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm 
+    flex justify-center items-center"
+    >
       <div className="flex flex-col min-w-[350px]">
         <button className="text-white text-xl place-self-end" onClick={() => dispatch(resetDeleteModal())}>
           X
@@ -44,5 +46,5 @@ export default function DeleteModal() {
         </section>
       </div>
     </div>
-  )
+  );
 }
