@@ -1,5 +1,5 @@
-import { Note } from '../components';
 import { SERVER_NOTE_PATH } from '../data/constants';
+import { Note } from '../data/types';
 import api from './api';
 
 export async function editNote(noteId: number, note: Pick<Note, 'title' | 'description'>) {

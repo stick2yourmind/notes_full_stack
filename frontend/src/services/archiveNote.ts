@@ -1,4 +1,4 @@
-import { Note } from '../components';
+import { Note } from '../data/types';
 import api from './api';
 
 export async function archiveNote(noteId: number) {
