@@ -4,17 +4,19 @@ export type NavLink = {
 }
 
 export enum Pages {
-  ACTIVE = "/",
-  ARCHIVED = "/archived"
+  // eslint-disable-next-line no-unused-vars
+  ACTIVE = '/',
+  // eslint-disable-next-line no-unused-vars
+  ARCHIVED = '/archived'
 }
 
 export const navLinks:NavLink[] = [
   {
-    name: "Active",
+    name: 'Active',
     href: Pages.ACTIVE
   },
   {
-    name: "Archived",
+    name: 'Archived',
     href: Pages.ARCHIVED
   }
-]
+];
