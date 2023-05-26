@@ -1,4 +1,3 @@
-'use client';
 import { RootState } from '@/redux/store';
 import { Fragment, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +6,6 @@ import DeleteModal from '../DeleteModal/DeleteModal';
 import { ToastType, resetToast } from '@/redux/features/toastSlice';
 import 'react-toastify/dist/ReactToastify.css';
 import CreateEditModal from '../CreateEditModal/CreateEditModal';
-import { initialNote } from '@/app/data/initialValues';
 import { CreateEditModalType } from '@/redux/features/createEditModalSlice';
 
 export default function Modals() {

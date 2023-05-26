@@ -1,13 +1,11 @@
-'use client';
-import { deleteNote } from '@/app/services';
 import { resetDeleteModal } from '@/redux/features/deleteModalSlice';
+import { deleteNoteState } from '@/redux/features/noteSlice';
 import { ToastType, enableToast } from '@/redux/features/toastSlice';
 import { RootState } from '@/redux/store';
-import { useRouter } from 'next/navigation';
+import { deleteNote } from '@/services';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function DeleteModal() {
-  const router = useRouter();
   const noteId = useSelector((state: RootState) => state.deleteModalReducer.currentNoteId);
   const dispatch = useDispatch();
 
@@ -17,10 +15,10 @@ export default function DeleteModal() {
       if (wasDeleted) {
         dispatch(enableToast({ type: ToastType.SUCCESS, message: 'Note was deleted' }));
         dispatch(resetDeleteModal());
-        router.refresh();
-      } else {
+        dispatch(deleteNoteState({id:noteId}));
+      } else 
         dispatch(enableToast({ type: ToastType.ERROR, message: 'Note could not be deleted' }));
-      }
+      
     }
   };
 

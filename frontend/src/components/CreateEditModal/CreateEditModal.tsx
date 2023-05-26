@@ -1,18 +1,13 @@
-'use client';
-import { deleteNote } from '@/app/services';
-import { resetDeleteModal } from '@/redux/features/deleteModalSlice';
-import { RootState } from '@/redux/store';
-import { useRouter } from 'next/navigation';
-import { Note } from '../NoteCard/NoteCard.types';
 import { useForm } from 'react-hook-form';
 import { ToastType, enableToast } from '@/redux/features/toastSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
-import { useEffect, useState } from 'react';
-import { createNote } from '@/app/services/createNote';
 import { resetCreateEditModal } from '@/redux/features/createEditModalSlice';
-import { editNote } from '@/app/services/editNote';
+import { useState } from 'react';
+import { createNote } from '@/services/createNote';
+import { editNote } from '@/services/editNote';
+import { Category, Note } from '@/data/types';
+import { addNoteState, editNoteState } from '@/redux/features/noteSlice';
 
 export type CreateEditModalProps = {
   mode: 'Edit' | 'Create';
@@ -23,7 +18,7 @@ type FormData = {
   Description: string;
 };
 export default function CreateEditModal({ mode, previous }: CreateEditModalProps) {
-  const router = useRouter();
+  const [categories,setCategories] = useState<Category[]>([]);
   const dispatch = useDispatch();
   const {
     register,
@@ -37,7 +32,12 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
   });
 
   const confirmCreate = async (newNote: Pick<Note, 'title' | 'description'>) => {
-    const wasCreated = !!(await createNote(newNote));
+    const categoriesArray = categories.map(category => category.id);
+    const wasCreated = !!(await createNote({
+      ...newNote,
+      categories: categoriesArray
+    }));
+
     if (wasCreated) {
       dispatch(
         enableToast({
@@ -46,15 +46,21 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
         }),
       );
       dispatch(resetCreateEditModal());
-      router.refresh();
-    } else {
+      dispatch(addNoteState({
+        ...newNote,
+        archived: false,
+        updatedAt: String(new Date()),
+        id:Number(new Date()),
+        categories: categoriesArray
+      }));
+    } else 
       dispatch(
         enableToast({
           type: ToastType.ERROR,
           message: 'Note could not be created',
         }),
       );
-    }
+    
   };
 
   const confirmEdit = async (newNote: Pick<Note, 'title' | 'description' | 'archived'>) => {
@@ -68,31 +74,35 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
           }),
         );
         dispatch(resetCreateEditModal());
-        router.refresh();
-      } else {
+        dispatch(editNoteState({
+          ...newNote,
+          updatedAt: String(new Date()),
+          id: previous.id
+        }));
+      } else 
         dispatch(
           enableToast({
             type: ToastType.ERROR,
             message: 'Note could not be edited',
           }),
         );
-      }
+      
     }
   };
 
-  const onSubmit = handleSubmit((data, e) => {
+  const onSubmit = handleSubmit((data) => {
     if (mode === 'Create')
       confirmCreate({
         title: data.Title,
         description: data.Description,
       });
-    else {
+    else 
       confirmEdit({
         title: data.Title,
         description: data.Description,
         archived: previous?.archived || false,
       });
-    }
+    
   });
 
   return (
@@ -100,13 +110,13 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
       className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm 
     flex justify-center items-center"
     >
-      <div className="flex flex-col min-w-[350px]">
+      <div className="flex flex-col min-w-[350px] max-w-[400px]">
         <button className="text-white text-xl place-self-end" onClick={() => dispatch(resetCreateEditModal())}>
           X
         </button>
         <section className="bg-white p-2 rounded flex flex-col items-center justify-center">
           <p className="text-pink-800 text-lg">{mode} Note</p>
-          <form onSubmit={onSubmit} className="flex flex-col gap-2 min-w-[80%]">
+          <form onSubmit={onSubmit} className="flex flex-col gap-2 min-w-[80%] max-w-full">
             <label htmlFor="title" className="text-purple-950">
               Title
             </label>
@@ -136,15 +146,18 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
             <p className="text-pink-600">
               {errors?.Description?.message ? `Description ${errors?.Description?.message}` : ''}
             </p>
+            
+            {/* <CategorySelector callback={setCategories}/> */}
 
             <button className="bg-pink-700 p-1 rounded" type="submit">
               Confirm
             </button>
 
-            <button className="bg-teal-600 p-1 rounded" onClick={() => dispatch(resetDeleteModal())}>
+            <button className="bg-teal-600 p-1 rounded" onClick={() => dispatch(resetCreateEditModal())}>
               Cancel
             </button>
           </form>
+          
         </section>
       </div>
     </div>
