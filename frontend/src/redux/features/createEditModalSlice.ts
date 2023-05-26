@@ -1,9 +1,13 @@
-import { Note } from '@/app/components';
+
+import { Note } from '@/data/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export enum CreateEditModalType {
+  // eslint-disable-next-line no-unused-vars
   CREATE = 'CREATE',
+  // eslint-disable-next-line no-unused-vars
   EDIT = 'EDIT',
+  // eslint-disable-next-line no-unused-vars
   NONE = 'NONE',
 }
 

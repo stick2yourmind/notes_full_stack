@@ -1,4 +1,3 @@
-import { createEditModalSlice } from './features/createEditModalSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import deleteModalReducer from './features/deleteModalSlice';
 import toastReducer from './features/toastSlice';
