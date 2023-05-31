@@ -13,7 +13,7 @@ export default function Modals() {
   const createEditModalState = useSelector((state: RootState) => state.createEditModalReducer);
   const toastState = useSelector((state: RootState) => state.toastReducer);
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     if (toastState.enable) {
       toast.clearWaitingQueue();
@@ -23,7 +23,7 @@ export default function Modals() {
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
-          pauseOnHover: true,
+          pauseOnHover: false,
           draggable: true,
           progress: undefined,
           theme: 'light',
@@ -32,18 +32,18 @@ export default function Modals() {
       if (toastState.type === ToastType.ERROR)
         toast.error(toastState.message, {
           position: 'top-right',
-          autoClose: 5000,
+          autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
-          pauseOnHover: true,
+          pauseOnHover: false,
           draggable: true,
           progress: undefined,
           theme: 'light',
         });
 
+      
       dispatch(resetToast());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toastState.enable]);
 
   return (
@@ -62,7 +62,7 @@ export default function Modals() {
         ''
       )}
 
-      <ToastContainer limit={1} />
+      <ToastContainer limit={3} />
     </Fragment>
   );
 }
