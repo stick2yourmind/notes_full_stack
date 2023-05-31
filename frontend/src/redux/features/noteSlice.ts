@@ -2,7 +2,7 @@ import { Note } from '@/data/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type initialNoteStateType = {
-  notes: Partial<Note>[]
+  notes: Note[]
 }
 const initialNoteState:initialNoteStateType = {
   notes: []
@@ -40,11 +40,11 @@ export const noteSlice = createSlice({
       const { payload } = action;
       return { notes: payload };
     },
-    addNoteState: (state, action: PayloadAction<Partial<Note>>) => {
+    addNoteState: (state, action: PayloadAction<Note>) => {
       const { payload } = action;
       return { notes: [...state.notes, payload] };
     },
-    editNoteState: (state, action: PayloadAction<Partial<Note>>) => {
+    editNoteState: (state, action: PayloadAction<Note>) => {
       const { payload } = action;
       const stateWithOutNote = {
         notes: state.notes.filter((note) => note.id !== payload.id)
