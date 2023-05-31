@@ -1,3 +1,2 @@
-export const SERVER_BASE_URL = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
-export const SERVER_NOTE_PATH = process.env.NEXT_PUBLIC_SERVER_NOTE_PATH;
-export const SERVER_CATEGORY_PATH = process.env.NEXT_PUBLIC_SERVER_CATEGORY_PATH;
+export const NOTE_BASE_URL = process.env.NEXT_PUBLIC_NOTE_BASE_URL || '';
+export const CATEGORY_BASE_URL = process.env.NEXT_PUBLIC_CATEGORY_BASE_URL || '';
