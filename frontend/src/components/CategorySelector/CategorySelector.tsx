@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { CategorySelectorProps } from './CategorySelector.types';
 import { Category } from '@/data/types';
-import { getCategories } from '@/services/getCategories';
+import { categoryService } from '@/services/category.service';
 
 export default function CategorySelector({callback}:CategorySelectorProps) {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -23,7 +23,7 @@ export default function CategorySelector({callback}:CategorySelectorProps) {
   useEffect(() => {
     const abortController = new AbortController();
     const fetchData = async () => {
-      const response = getCategories(abortController);
+      const response = categoryService.get<Category[]>({config:{signal: abortController.signal}});
       const data =  await response;
       setCategories(data || []);
     };

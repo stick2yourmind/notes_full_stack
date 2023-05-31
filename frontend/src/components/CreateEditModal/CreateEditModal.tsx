@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import { resetCreateEditModal } from '@/redux/features/createEditModalSlice';
 import { useState } from 'react';
-import { createNote } from '@/services/createNote';
-import { editNote } from '@/services/editNote';
 import { Category, Note } from '@/data/types';
 import { addNoteState, editNoteState } from '@/redux/features/noteSlice';
+import CategorySelector from '../CategorySelector/CategorySelector';
+import { noteService } from '@/services/note.service';
 
 export type CreateEditModalProps = {
   mode: 'Edit' | 'Create';
@@ -32,61 +32,78 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
   });
 
   const confirmCreate = async (newNote: Pick<Note, 'title' | 'description'>) => {
-    const categoriesArray = categories.map(category => category.id);
-    const wasCreated = !!(await createNote({
-      ...newNote,
-      categories: categoriesArray
-    }));
-
-    if (wasCreated) {
+    try {
+      const categoriesArray = categories.map(category => category.id);
+      const noteResponse = await noteService.post<Note, Partial<Note>>({
+        data:
+        {
+          ...newNote, 
+          categories: categoriesArray
+        }
+      });
+      
       dispatch(
         enableToast({
           type: ToastType.SUCCESS,
           message: 'Note was created',
         }),
       );
+
       dispatch(resetCreateEditModal());
+      
       dispatch(addNoteState({
         ...newNote,
         archived: false,
-        updatedAt: String(new Date()),
-        id:Number(new Date()),
+        updatedAt: noteResponse.updatedAt,
+        id:noteResponse.id,
         categories: categoriesArray
       }));
-    } else 
+    } catch (error) {
       dispatch(
         enableToast({
           type: ToastType.ERROR,
           message: 'Note could not be created',
         }),
       );
-    
+    }
   };
 
-  const confirmEdit = async (newNote: Pick<Note, 'title' | 'description' | 'archived'>) => {
-    if (previous?.id) {
-      const wasEdited = !!(await editNote(previous.id, newNote));
-      if (wasEdited) {
-        dispatch(
-          enableToast({
-            type: ToastType.SUCCESS,
-            message: 'Note was edited',
-          }),
-        );
-        dispatch(resetCreateEditModal());
-        dispatch(editNoteState({
-          ...newNote,
-          updatedAt: String(new Date()),
-          id: previous.id
-        }));
-      } else 
-        dispatch(
-          enableToast({
-            type: ToastType.ERROR,
-            message: 'Note could not be edited',
-          }),
-        );
+  const confirmEdit = async (note: Pick<Note, 'id' | 'title' | 'description' | 'archived'>) => {
+    try {
+      const categoriesArray = categories.map(category => category.id);
+      const noteResponse = await noteService.put<Note, Partial<Note>>({
+        editId: note.id,
+        data:
+        {
+          ...note, 
+          categories: categoriesArray
+        }
+      });
       
+      dispatch(
+        enableToast({
+          type: ToastType.SUCCESS,
+          message: 'Note was edited',
+        }),
+      );
+
+      dispatch(resetCreateEditModal());
+
+      
+      dispatch(editNoteState({
+        ...note,
+        archived: noteResponse.archived,
+        updatedAt: noteResponse.updatedAt,
+        id: noteResponse.id,
+        categories: categoriesArray
+      }));
+    } catch (error) {
+      dispatch(
+        enableToast({
+          type: ToastType.ERROR,
+          message: 'Note could not be edited',
+        }),
+      );
     }
   };
 
@@ -98,6 +115,7 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
       });
     else 
       confirmEdit({
+        id: previous?.id || 0,
         title: data.Title,
         description: data.Description,
         archived: previous?.archived || false,
@@ -147,7 +165,7 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
               {errors?.Description?.message ? `Description ${errors?.Description?.message}` : ''}
             </p>
             
-            {/* <CategorySelector callback={setCategories}/> */}
+            <CategorySelector callback={setCategories}/>
 
             <button className="bg-pink-700 p-1 rounded" type="submit">
               Confirm
