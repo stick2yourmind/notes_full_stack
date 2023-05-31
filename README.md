@@ -47,11 +47,16 @@ the definition of the [Service Layer pattern](https://martinfowler.com/eaaCatalo
 NOTE: these mockups are for reference purposes only, different variants of user interface can be
 accepted if they match the desired functionality as described in the user stories.
 
-![](https://raw.githubusercontent.com/stick2yourmind/todo_full_stack/main/requirements/1.png)
+![](https://github.com/stick2yourmind/notes_full_stack/blob/main/requirements/1.png?raw=true)
+![](https://github.com/stick2yourmind/notes_full_stack/blob/main/requirements/2.png?raw=true)
 
 **Expected look and feel of the create/edit functionality**
 
+![](https://github.com/stick2yourmind/notes_full_stack/blob/main/requirements/3.png?raw=true)
+
 **Confirmation dialog for the delete note**
+
+![](https://github.com/stick2yourmind/notes_full_stack/blob/main/requirements/4.png?raw=true)
 
 ### Phase 2
 User stories
@@ -59,6 +64,9 @@ User stories
 * As a user, I want to be able to filter notes by category
 
 **Mockups**
+
+![](https://github.com/stick2yourmind/notes_full_stack/blob/main/requirements/5.png?raw=true)
+![](https://github.com/stick2yourmind/notes_full_stack/blob/main/requirements/6.png?raw=true)
 ## 5. Extra functional and non-functional requirements
 These features will provide EXTRA POINTS to your exercise results if done
 * Login: If you provide a login screen that allows users to log in and out from the app - you need to document the default user/password used in README.md.
