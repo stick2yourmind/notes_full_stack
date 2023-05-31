@@ -8,11 +8,16 @@ export class NoteService {
 
   async createNote(dto: CreateNoteDto) {
     try {
+      const categoriesArray = dto?.categories?.map((categoryId) => ({ id: categoryId })) || [];
       const newNote = await this.prisma.note.create({
         data: {
           title: dto.title,
           description: dto.description,
           archived: false,
+          categories: { connect: categoriesArray },
+        },
+        include: {
+          categories: true,
         },
       });
       return newNote;
@@ -47,6 +52,9 @@ export class NoteService {
           archived: dto.archived,
           categories: { connect: categoriesArray },
         },
+        include: {
+          categories: true,
+        },
       });
       return editNote;
     } catch (error) {
@@ -62,6 +70,9 @@ export class NoteService {
         },
         data: {
           archived: dto.archived,
+        },
+        include: {
+          categories: true,
         },
       });
       return editNote;

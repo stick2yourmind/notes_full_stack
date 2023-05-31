@@ -9,3 +9,8 @@ body{
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+.Toastify{
+  position: relative;
+  z-index: 100;
+}

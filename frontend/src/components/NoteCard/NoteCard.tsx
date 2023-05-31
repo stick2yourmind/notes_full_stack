@@ -4,8 +4,9 @@ import { NoteCardProps } from './NoteCard.types';
 import { useDispatch } from 'react-redux';
 import { enableDeleteModal } from '@/redux/features/deleteModalSlice';
 import { CreateEditModalType, enableCreateEditModal } from '@/redux/features/createEditModalSlice';
-import { activeNote, archiveNote } from '@/services';
 import { activeNoteState, archiveNoteState } from '@/redux/features/noteSlice';
+import { noteService } from '@/services/note.service';
+import { Note } from '@/data/types';
 
 export default function NoteCard({ title, description, updatedAt, archived, id }: NoteCardProps) {
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ export default function NoteCard({ title, description, updatedAt, archived, id }
         {archived ? (
           <button
             onClick={() => {
-              activeNote(id);
+              noteService.activeNote<Note>(id);
               dispatch(activeNoteState({id}));
             }}
           >
@@ -47,7 +48,7 @@ export default function NoteCard({ title, description, updatedAt, archived, id }
         ) : (
           <button
             onClick={() => {
-              archiveNote(id);
+              noteService.archiveNote<Note>(id);
               dispatch(archiveNoteState({id}));
             }}
           >

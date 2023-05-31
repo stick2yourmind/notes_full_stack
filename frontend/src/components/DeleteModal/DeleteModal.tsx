@@ -1,8 +1,9 @@
+import { Note } from '@/data/types';
 import { resetDeleteModal } from '@/redux/features/deleteModalSlice';
 import { deleteNoteState } from '@/redux/features/noteSlice';
 import { ToastType, enableToast } from '@/redux/features/toastSlice';
 import { RootState } from '@/redux/store';
-import { deleteNote } from '@/services';
+import { noteService } from '@/services/note.service';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function DeleteModal() {
@@ -11,8 +12,8 @@ export default function DeleteModal() {
 
   const confirmDelete = async () => {
     if (noteId) {
-      const wasDeleted = !!(await deleteNote(noteId));
-      if (wasDeleted) {
+      const noteResponse = await noteService.deleteById<Note>(noteId);
+      if (noteResponse.id) {
         dispatch(enableToast({ type: ToastType.SUCCESS, message: 'Note was deleted' }));
         dispatch(resetDeleteModal());
         dispatch(deleteNoteState({id:noteId}));

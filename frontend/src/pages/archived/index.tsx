@@ -1,9 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { NoteCard } from '@/components';
+import { Note } from '@/data/types';
 import { setNotesState } from '@/redux/features/noteSlice';
 import { RootState } from '@/redux/store';
-import { getArchivedNotes } from '@/services';
+import { noteService } from '@/services/note.service';
 import { useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,12 +16,13 @@ export default function Archived() {
   useEffect(() => {
     const abortController = new AbortController();
     const fetchData = async () => {
-      const resData = getArchivedNotes(abortController);
+      const resData = noteService.getArchivedNotes<Note[]>({signal:abortController.signal});
       const data =  await resData;
       return data;
     };
     fetchData()
-      .then(notes => dispatch(setNotesState(notes || [])));
+      .then(notes => dispatch(setNotesState(notes || [])))
+      .catch( () => abortController.abort());
   
     return () => {
       abortController.abort();
