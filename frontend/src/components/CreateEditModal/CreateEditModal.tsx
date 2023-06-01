@@ -8,21 +8,8 @@ import { Note } from '@/data/types';
 import { addNoteState, editNoteState } from '@/redux/features/noteSlice';
 import CategorySelector from '../CategorySelector/CategorySelector';
 import { noteService } from '@/services/note.service';
+import { CreateEditModalProps, FormData } from './CreateEditModal.types';
 
-export type CreateEditModalProps = {
-  mode: 'Edit' | 'Create';
-  previous: {
-    description: Note['description'],
-    title: Note['title'],
-    id: Note['id'],
-    archived: Note['archived'],
-    categories: Note['categories']
-  } | null;
-};
-type FormData = {
-  Title: string;
-  Description: string;
-};
 export default function CreateEditModal({ mode, previous }: CreateEditModalProps) {
   const [categories,setCategories] = useState<number[]>([]);
   const dispatch = useDispatch();
