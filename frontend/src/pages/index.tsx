@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { NoteCard } from '@/components';
-import { Note } from '@/data/types';
+import { NoteResponse } from '@/data/types';
 import { CreateEditModalType, enableCreateEditModal } from '@/redux/features/createEditModalSlice';
 import { setNotesState } from '@/redux/features/noteSlice';
 import { RootState } from '@/redux/store';
@@ -17,9 +17,13 @@ export default function Home() {
   useEffect(() => {
     const abortController = new AbortController();
     const fetchData = async () => {
-      const resData = noteService.getActiveNotes<Note[]>({signal:abortController.signal});
+      const resData = noteService.getActiveNotes<NoteResponse[]>({signal:abortController.signal});
       const data =  await resData;
-      return data;
+      const dataNormalized = data.map(dataItem => ({
+        ...dataItem, 
+        categories: dataItem.categories?.map(categoryItem => categoryItem.id) || []}
+      ));
+      return dataNormalized;
     };
     fetchData()
       .then(notes => dispatch(setNotesState(notes || [])))
@@ -58,6 +62,7 @@ export default function Home() {
                 description={note.description}
                 updatedAt={note.updatedAt}
                 archived={note.archived}
+                categories={note.categories}
                 id={note.id}
                 key={note.id}
               />
