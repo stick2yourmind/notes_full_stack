@@ -1,6 +1,7 @@
-import { Category } from '@/data/types';
+import { Note } from '@/data/types';
+import { Dispatch, SetStateAction } from 'react';
 
 export type CategorySelectorProps = {
-  // eslint-disable-next-line no-unused-vars
-  callback: (category:Category[]) => void
+  callback: Dispatch<SetStateAction<number[]>>,
+  selectedCategories: Note['categories']
 }

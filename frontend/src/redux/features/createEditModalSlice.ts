@@ -14,7 +14,7 @@ export enum CreateEditModalType {
 type createEditModalStateType = {
   enable: boolean;
   type: CreateEditModalType;
-  currentNote: Pick<Note, 'id' | 'title' | 'description' | 'archived'> | null;
+  currentNote: Pick<Note, 'id' | 'title' | 'description' | 'archived' | 'categories'> | null;
 };
 
 const initialCreateEditModalState: createEditModalStateType = {
