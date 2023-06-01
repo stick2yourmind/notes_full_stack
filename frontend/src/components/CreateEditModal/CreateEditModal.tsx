@@ -4,21 +4,27 @@ import { useDispatch } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
 import { resetCreateEditModal } from '@/redux/features/createEditModalSlice';
 import { useState } from 'react';
-import { Category, Note } from '@/data/types';
+import { Note } from '@/data/types';
 import { addNoteState, editNoteState } from '@/redux/features/noteSlice';
 import CategorySelector from '../CategorySelector/CategorySelector';
 import { noteService } from '@/services/note.service';
 
 export type CreateEditModalProps = {
   mode: 'Edit' | 'Create';
-  previous: Pick<Note, 'description' | 'title' | 'id' | 'archived'> | null;
+  previous: {
+    description: Note['description'],
+    title: Note['title'],
+    id: Note['id'],
+    archived: Note['archived'],
+    categories: Note['categories']
+  } | null;
 };
 type FormData = {
   Title: string;
   Description: string;
 };
 export default function CreateEditModal({ mode, previous }: CreateEditModalProps) {
-  const [categories,setCategories] = useState<Category[]>([]);
+  const [categories,setCategories] = useState<number[]>([]);
   const dispatch = useDispatch();
   const {
     register,
@@ -30,15 +36,14 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
       Description: previous?.description || '',
     },
   });
-
+  
   const confirmCreate = async (newNote: Pick<Note, 'title' | 'description'>) => {
     try {
-      const categoriesArray = categories.map(category => category.id);
       const noteResponse = await noteService.post<Note, Partial<Note>>({
         data:
         {
           ...newNote, 
-          categories: categoriesArray
+          categories
         }
       });
       
@@ -56,7 +61,7 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
         archived: false,
         updatedAt: noteResponse.updatedAt,
         id:noteResponse.id,
-        categories: categoriesArray
+        categories
       }));
     } catch (error) {
       dispatch(
@@ -70,13 +75,12 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
 
   const confirmEdit = async (note: Pick<Note, 'id' | 'title' | 'description' | 'archived'>) => {
     try {
-      const categoriesArray = categories.map(category => category.id);
       const noteResponse = await noteService.put<Note, Partial<Note>>({
         editId: note.id,
         data:
         {
           ...note, 
-          categories: categoriesArray
+          categories
         }
       });
       
@@ -95,7 +99,7 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
         archived: noteResponse.archived,
         updatedAt: noteResponse.updatedAt,
         id: noteResponse.id,
-        categories: categoriesArray
+        categories
       }));
     } catch (error) {
       dispatch(
@@ -165,7 +169,8 @@ export default function CreateEditModal({ mode, previous }: CreateEditModalProps
               {errors?.Description?.message ? `Description ${errors?.Description?.message}` : ''}
             </p>
             
-            <CategorySelector callback={setCategories}/>
+            <CategorySelector callback={setCategories} 
+              selectedCategories={previous?.categories || []}/>
 
             <button className="bg-pink-700 p-1 rounded" type="submit">
               Confirm
