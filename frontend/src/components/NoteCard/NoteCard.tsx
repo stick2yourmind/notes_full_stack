@@ -8,7 +8,14 @@ import { activeNoteState, archiveNoteState } from '@/redux/features/noteSlice';
 import { noteService } from '@/services/note.service';
 import { Note } from '@/data/types';
 
-export default function NoteCard({ title, description, updatedAt, archived, id }: NoteCardProps) {
+export default function NoteCard({ 
+  title, 
+  description, 
+  updatedAt, 
+  archived, 
+  id, 
+  categories 
+}: NoteCardProps) {
   const dispatch = useDispatch();
 
   const dateAgo = formatDistance(new Date(updatedAt), new Date(), {
@@ -23,7 +30,7 @@ export default function NoteCard({ title, description, updatedAt, archived, id }
     dispatch(
       enableCreateEditModal({
         type: CreateEditModalType.EDIT,
-        currentNote: { id, title, description, archived },
+        currentNote: { id, title, description, archived, categories },
       }),
     );
   };
